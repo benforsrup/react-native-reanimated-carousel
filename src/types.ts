@@ -194,6 +194,18 @@ export type TCarouselProps<T = any> = {
     absoluteProgress: number
   ) => void
 
+  /**
+   * Config for setting
+   * minimumScrollDistancePerSwipe = Minimum amount of pixels needed to scroll to the next item
+   * minimumScrollVelocity = Minimum velocity needed to scroll to the next item
+   */
+  minimumConfig?: {
+    minimumScrollDistancePerSwipe: number
+    minimumScrollVelocity: number
+  }
+
+  onTouchBegin?: () => void
+
   // ============================== deprecated props ==============================
   /**
      * If enabled, releasing the touch will scroll to the nearest item.

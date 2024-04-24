@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ScrollView } from "react-native-gesture-handler";
-import type { ICarouselInstance } from "react-native-reanimated-carousel";
+import type { ICarouselInstance, TCarouselProps } from "react-native-reanimated-carousel";
 import Carousel from "react-native-reanimated-carousel";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -16,6 +16,7 @@ function Index() {
   const [isFast, setIsFast] = React.useState(false);
   const [isAutoPlay, setIsAutoPlay] = React.useState(false);
   const [isPagingEnabled, setIsPagingEnabled] = React.useState(true);
+  const [minimumConfig, setMinimumConfig] = React.useState<TCarouselProps["minimumConfig"]>();
   const ref = React.useRef<ICarouselInstance>(null);
 
   const baseOptions = isVertical
@@ -40,6 +41,7 @@ function Index() {
         style={{ width: "100%" }}
         autoPlay={isAutoPlay}
         autoPlayInterval={isFast ? 100 : 2000}
+        minimumConfig={minimumConfig}
         data={data}
         pagingEnabled={isPagingEnabled}
         onSnapToItem={index => console.log("current index:", index)}
@@ -79,7 +81,7 @@ function Index() {
             setIsPagingEnabled(!isPagingEnabled);
           }}
         >
-                PagingEnabled:{isPagingEnabled.toString()}
+          PagingEnabled:{isPagingEnabled.toString()}
         </SButton>
         <SButton
           onPress={() => {
@@ -93,7 +95,7 @@ function Index() {
             console.log(ref.current?.getCurrentIndex());
           }}
         >
-                Log current index
+          Log current index
         </SButton>
         <SButton
           onPress={() => {
@@ -104,21 +106,36 @@ function Index() {
             );
           }}
         >
-                Change data length to:{data.length === 6 ? 8 : 6}
+          Change data length to:{data.length === 6 ? 8 : 6}
         </SButton>
         <SButton
           onPress={() => {
             ref.current?.scrollTo({ count: -1, animated: true });
           }}
         >
-                prev
+          prev
         </SButton>
         <SButton
           onPress={() => {
             ref.current?.scrollTo({ count: 1, animated: true });
           }}
         >
-                next
+          next
+        </SButton>
+        <SButton
+          onPress={() => {
+            if (minimumConfig) {
+              setMinimumConfig(undefined);
+            }
+            else {
+              setMinimumConfig({
+                minimumScrollDistancePerSwipe: PAGE_WIDTH / 2,
+                minimumScrollVelocity: 1000,
+              });
+            }
+          }}
+        >
+          Minimum config: {minimumConfig ? "enabled" : "disabled"}
         </SButton>
       </ScrollView>
     </SafeAreaView>

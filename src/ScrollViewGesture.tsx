@@ -52,6 +52,7 @@ const IScrollViewGesture: React.FC<PropsWithChildren<Props>> = (props) => {
       dataLength,
       overscrollEnabled,
       maxScrollDistancePerSwipe,
+      minimumConfig,
     },
   } = React.useContext(CTX);
 
@@ -323,6 +324,21 @@ const IScrollViewGesture: React.FC<PropsWithChildren<Props>> = (props) => {
           const nextPage = Math.round((ctx.panOffset + maxScrollDistancePerSwipe * Math.sign(totalTranslation)) / size) * size;
           translation.value = withSpring(withProcessTranslation(nextPage), onScrollEnd);
         }
+        // If minimumConfig is provided, use it to determine if the swipe is valid
+        else if (minimumConfig) {
+          const { minimumScrollDistancePerSwipe, minimumScrollVelocity } = minimumConfig;
+
+          const isSwipeValid = Math.abs(totalTranslation) > minimumScrollDistancePerSwipe
+            || Math.abs(scrollEndVelocity.value) > minimumScrollVelocity;
+
+          if (isSwipeValid) { endWithSpring(onScrollEnd); }
+
+          else {
+            const closestPage = Math.round(ctx.panOffset / size) * size;
+            translation.value = withSpring(closestPage, onScrollEnd);
+          }
+        }
+
         else {
           endWithSpring(onScrollEnd);
         }
@@ -340,6 +356,7 @@ const IScrollViewGesture: React.FC<PropsWithChildren<Props>> = (props) => {
       snapEnabled,
       onScrollBegin,
       onScrollEnd,
+      minimumConfig,
     ],
   );
 
